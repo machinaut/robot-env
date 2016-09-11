@@ -18,7 +18,7 @@ steptime = 10
 # Move per step
 servomv = 1
 
-servocenter = 0
+servocenter = 90
 
 pygame.init()
 display = pygame.display.set_mode((100,100))
