@@ -16,11 +16,13 @@ int gripPot = 4;  // Grip Dial (potentiometer) - Analog I/O 4
 int captPin = 2;  // capture button - Digital I/O 2
 int playPin = 4;  // playback button - Digital I/O 4
 
-void printInputs(void);
+void printPositions(void);
 void centerServos(void);
+void writeServos(void);
 
 void setup() {
   Serial.begin(115200);
+  Serial.setTimeout(10);  // Timeout waiting for input after 10 milliseconds
 
   baseSrv.attach(3);
   shoulderSrv.attach(5);
@@ -30,16 +32,18 @@ void setup() {
   pinMode(captPin, INPUT);
   pinMode(playPin, INPUT);
 
+  centerServos();
+
   while (!Serial);  // Wait for serial port to connect
 }
 
 
 void loop() {
-  centerServos();
-  printInputs();
+  printPositions();
+  writeServos();
 }
 
-void printInputs(void) {
+void printPositions(void) {
   int basePos = analogRead(basePot);  // Base Joystick Position
   int shoulderPos = analogRead(shoulderPot);  // Shoulder Joystick Position
   int elbowPos = analogRead(elbowPot);  // Elbow Joystick Position
@@ -48,6 +52,7 @@ void printInputs(void) {
   int captVal = digitalRead(captPin);  // Capture Button Value (HIGH / LOW)
   int playVal = digitalRead(playPin);  // Playback Button Value (HIGH / LOW)
 
+  Serial.print('R');
   Serial.print(basePos); Serial.print(',');
   Serial.print(shoulderPos); Serial.print(',');
   Serial.print(elbowPos); Serial.print(',');
@@ -55,6 +60,30 @@ void printInputs(void) {
   Serial.print(gripPos); Serial.print(',');
   Serial.print(captVal); Serial.print(',');
   Serial.print(playVal); Serial.print('\n');
+}
+
+void writeServos(void) {
+  Serial.readStringUntil('W');
+  if (Serial.available() > 0) {
+    int baseCmd = Serial.parseInt();  Serial.read();  // Skip comma
+    int shoulderCmd = Serial.parseInt();  Serial.read();  // Skip comma
+    int elbowCmd = Serial.parseInt();  Serial.read();  // Skip comma
+    int wristCmd = Serial.parseInt();  Serial.read();  // Skip comma
+    int gripCmd = Serial.parseInt();  Serial.read();  // Skip newline
+
+    baseSrv.write(baseCmd);
+    shoulderSrv.write(shoulderCmd);
+    elbowSrv.write(elbowCmd);
+    wristSrv.write(wristCmd);
+    gripSrv.write(gripCmd);
+
+    Serial.print('E');
+    Serial.print(baseCmd); Serial.print(',');
+    Serial.print(shoulderCmd); Serial.print(',');
+    Serial.print(elbowCmd); Serial.print(',');
+    Serial.print(wristCmd); Serial.print(',');
+    Serial.print(gripCmd); Serial.print('\n');
+  }
 }
 
 void centerServos(void) {
