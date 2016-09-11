@@ -37,7 +37,6 @@ void setup() {
   while (!Serial);  // Wait for serial port to connect
 }
 
-
 void loop() {
   printPositions();
   writeServos();
@@ -70,6 +69,12 @@ void writeServos(void) {
     int elbowCmd = Serial.parseInt();  Serial.read();  // Skip comma
     int wristCmd = Serial.parseInt();  Serial.read();  // Skip comma
     int gripCmd = Serial.parseInt();  Serial.read();  // Skip newline
+
+    baseCmd = constrain(baseCmd, 0, 180);
+    shoulderCmd = constrain(shoulderCmd, 0, 180);
+    elbowCmd = constrain(elbowCmd, 0, 180);
+    wristCmd = constrain(wristCmd, 0, 180);
+    gripCmd = constrain(gripCmd, 0, 180);
 
     baseSrv.write(baseCmd);
     shoulderSrv.write(shoulderCmd);
