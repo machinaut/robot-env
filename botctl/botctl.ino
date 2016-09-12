@@ -39,7 +39,9 @@ void setup() {
 
 void loop() {
   printPositions();
-  writeServos();
+  if (Serial.available() > 0) {
+    writeServos();
+  }
 }
 
 void printPositions(void) {
@@ -59,36 +61,36 @@ void printPositions(void) {
   Serial.print(gripPos); Serial.print(',');
   Serial.print(captVal); Serial.print(',');
   Serial.print(playVal); Serial.print('\n');
+  Serial.flush();
 }
 
 void writeServos(void) {
   Serial.readStringUntil('W');
-  if (Serial.available() > 0) {
-    int baseCmd = Serial.parseInt();  Serial.read();  // Skip comma
-    int shoulderCmd = Serial.parseInt();  Serial.read();  // Skip comma
-    int elbowCmd = Serial.parseInt();  Serial.read();  // Skip comma
-    int wristCmd = Serial.parseInt();  Serial.read();  // Skip comma
-    int gripCmd = Serial.parseInt();  Serial.read();  // Skip newline
+  int baseCmd = Serial.parseInt();  Serial.read();  // Skip comma
+  int shoulderCmd = Serial.parseInt();  Serial.read();  // Skip comma
+  int elbowCmd = Serial.parseInt();  Serial.read();  // Skip comma
+  int wristCmd = Serial.parseInt();  Serial.read();  // Skip comma
+  int gripCmd = Serial.parseInt();  Serial.read();  // Skip newline
 
-    baseCmd = constrain(baseCmd, 0, 180);
-    shoulderCmd = constrain(shoulderCmd, 0, 180);
-    elbowCmd = constrain(elbowCmd, 0, 180);
-    wristCmd = constrain(wristCmd, 0, 180);
-    gripCmd = constrain(gripCmd, 0, 180);
+  baseCmd = constrain(baseCmd, 0, 180);
+  shoulderCmd = constrain(shoulderCmd, 0, 180);
+  elbowCmd = constrain(elbowCmd, 0, 180);
+  wristCmd = constrain(wristCmd, 0, 180);
+  gripCmd = constrain(gripCmd, 0, 180);
 
-    baseSrv.write(baseCmd);
-    shoulderSrv.write(shoulderCmd);
-    elbowSrv.write(elbowCmd);
-    wristSrv.write(wristCmd);
-    gripSrv.write(gripCmd);
+  baseSrv.write(baseCmd);
+  shoulderSrv.write(shoulderCmd);
+  elbowSrv.write(elbowCmd);
+  wristSrv.write(wristCmd);
+  gripSrv.write(gripCmd);
 
-    Serial.print('E');
-    Serial.print(baseCmd); Serial.print(',');
-    Serial.print(shoulderCmd); Serial.print(',');
-    Serial.print(elbowCmd); Serial.print(',');
-    Serial.print(wristCmd); Serial.print(',');
-    Serial.print(gripCmd); Serial.print('\n');
-  }
+  Serial.print('E');
+  Serial.print(baseCmd); Serial.print(',');
+  Serial.print(shoulderCmd); Serial.print(',');
+  Serial.print(elbowCmd); Serial.print(',');
+  Serial.print(wristCmd); Serial.print(',');
+  Serial.print(gripCmd); Serial.print('\n');
+  Serial.flush();
 }
 
 void centerServos(void) {
