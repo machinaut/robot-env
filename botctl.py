@@ -5,6 +5,13 @@ import serial
 import pygame
 from pygame.locals import *
 
+#Dicts everywhere
+axis_data = {'base' : {'upkey':K_q, 'zerokey':K_a, 'downkey':K_z, 'pos':90},
+             'shoulder' : {'upkey':K_w, 'zerokey':K_s, 'downkey':K_x, 'pos':90},
+             'elbow' : {'upkey':K_e, 'zerokey':K_d, 'downkey':K_c, 'pos':90},
+             'wrist' : {'upkey':K_r, 'zerokey':K_f, 'downkey':K_v, 'pos':90},
+             'grip' : {'upkey':K_t, 'zerokey':K_g, 'downkey':K_b, 'pos':90}}
+
 # [forward_key, zero_key, backwards_key]
 base_keys 	= [K_q, K_a, K_z]
 shoulder_keys 	= [K_w, K_s, K_x]
