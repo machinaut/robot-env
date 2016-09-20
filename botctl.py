@@ -5,6 +5,8 @@ import serial
 import pygame
 from pygame.locals import *
 
+DBG = True
+
 #Dicts everywhere
 axis_data = {'base' : {'upkey':K_q, 'zerokey':K_a, 'downkey':K_z, 'pos':90},
              'shoulder' : {'upkey':K_w, 'zerokey':K_s, 'downkey':K_x, 'pos':90},
@@ -36,7 +38,9 @@ display = pygame.display.set_mode((100,100))
 #			stopbits = serial.STOPBITS_ONE,
 #			bytesize = serial.EIGHTBITS)
 
-ser = serial.Serial(sys.argv[1],115200) 
+if not DBG:
+	ser = serial.Serial(sys.argv[1],115200) 
+
 b_pos = 90
 s_pos = 90 
 e_pos = 90
@@ -57,12 +61,25 @@ while 1:
 	# Make it quits
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-		ser.close()
+		if not DBG:
+			ser.close()
                 pygame.quit(); sys.exit();
 	
-	print ser.readline()
+	if not DBG:
+		print ser.readline()
 
 	keys = pygame.key.get_pressed()
+	
+	for axis in axis_data.iteritems():
+		axisname = axis[0]
+		axis = axis[1]
+		if keys[axis['upkey']]:
+			axis['pos'] += servomv
+		if keys[axis['zerokey']]:
+			axis['pos'] = servocenter
+		if keys[axis['downkey']]:
+			axis['pos'] -= servomv
+		print axisname, axis	
 
 	if keys[base_keys[0]]:
 		b_pos += servomv
@@ -102,9 +119,12 @@ while 1:
 	pygame.time.wait(steptime)
 	
 	pos_normalize()
-	
+
         cmd_str = ','.join([str(b_pos), str(s_pos), str(e_pos), str(w_pos), str(g_pos)])
 	cmd_str = 'W' + cmd_str + '\n'
 	print cmd_str
-	ser.write(cmd_str)
-	ser.flush()
+	if DBG:
+		print cmd_str
+	else:
+		ser.write(cmd_str)
+		ser.flush()
