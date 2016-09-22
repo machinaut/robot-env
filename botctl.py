@@ -9,7 +9,7 @@ DBG = True
 
 #Dicts everywhere
 axis_data = {'base' : {'upkey':K_q, 'zerokey':K_a, 'downkey':K_z, 'pos':90},
-             'shoulder' : {'upkey':K_w, 'zerokey':K_s, 'downkey':K_x, 'pos':90},
+             'shoulder' : {'upkey':K_x, 'zerokey':K_s, 'downkey':K_w, 'pos':90},
              'elbow' : {'upkey':K_e, 'zerokey':K_d, 'downkey':K_c, 'pos':90},
              'wrist' : {'upkey':K_r, 'zerokey':K_f, 'downkey':K_v, 'pos':90},
              'grip' : {'upkey':K_t, 'zerokey':K_g, 'downkey':K_b, 'pos':90}}
@@ -47,6 +47,13 @@ e_pos = 90
 w_pos = 90
 g_pos = 90
 
+def dict_normalize():
+	global axis_data
+	for axis in axis_data.iteritems():
+		name = axis[0]
+		axis = axis[1]
+		axis['pos'] = max(0, min(axis['pos'], 180))
+
 def pos_normalize():
 	global b_pos, s_pos, e_pos, w_pos, g_pos
 	b_pos = max(0, min(b_pos, 180))
@@ -79,7 +86,7 @@ while 1:
 			axis['pos'] = servocenter
 		if keys[axis['downkey']]:
 			axis['pos'] -= servomv
-		print axisname, axis	
+		#print axisname, axis	
 
 	if keys[base_keys[0]]:
 		b_pos += servomv
@@ -119,12 +126,16 @@ while 1:
 	pygame.time.wait(steptime)
 	
 	pos_normalize()
-
-        cmd_str = ','.join([str(b_pos), str(s_pos), str(e_pos), str(w_pos), str(g_pos)])
+	dict_normalize()
+        
+	cmd_str2 = ','.join([str(axis_data[ax]['pos']) for ax in ['base', 'shoulder', 'elbow', 'wrist', 'grip']])
+	cmd_str2 = 'W' + cmd_str2 + '\n'
+	
+	cmd_str = ','.join([str(b_pos), str(s_pos), str(e_pos), str(w_pos), str(g_pos)])
 	cmd_str = 'W' + cmd_str + '\n'
-	print cmd_str
 	if DBG:
 		print cmd_str
+		print cmd_str2
 	else:
 		ser.write(cmd_str)
 		ser.flush()
