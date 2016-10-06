@@ -137,5 +137,5 @@ while 1:
     print cmd_str
     print cmd_str2
   else:
-    ser.write(cmd_str)
+    ser.write(cmd_str2)
     ser.flush()
