@@ -19,12 +19,13 @@ cv2.namedWindow('frame')
 
 ######## Setup everything ahead of time for our calibration ########
 bsize = (5,4)
+objpsz = bsize[0]*bsize[1]
 # termination criteria
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-objp = np.zeros((6*7,3), np.float32)
-objp[:,:2] = np.mgrid[0:7,0:6].T.reshape(-1,2)
+objp = np.zeros((objpsz,3), np.float32)
+objp[:,:2] = np.mgrid[0:bsize[0],0:bsize[1]].T.reshape(-1,2)
 
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d point in real world space
@@ -51,9 +52,9 @@ while(True):
         imgpoints.append(corners2)
 
         # Draw and display the corners
-        img = cv2.drawChessboardCorners(gra, bsize, corners2,ret)
+        img = cv2.drawChessboardCorners(frame, bsize, corners2,ret)
     else:
-        img = gray
+        img = frame
  
     # Display the resulting frame
     cv2.imshow('frame', img)
@@ -66,9 +67,12 @@ while(True):
 if len(objpoints) < 15:
     print "Not enough calibration data!"
 else:
-    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints,
-            gray.shape[::-1],None,None)
-    print ret, mtx, dist, rvecs, tvecs
+    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
+    print 'ret', ret
+    print 'mtx', mtx
+    print 'dist', dist
+    print 'rvecs', rvecs
+    print 'tvecs', tvecs
 
 # When everything done, release the capture
 cap.release()
