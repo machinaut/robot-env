@@ -48,9 +48,8 @@ while(True):
 
     rvecs, tvecs = cv2.aruco.estimatePoseSingleMarkers(corners, 0.070, cammat, distcoef)
     
-    if len(myids) == 2:
-        dist = np.linalg.norm(tvecs[0]-tvecs[1])
-        print dist
+    if len(myids) == 1:
+        print tvecs[0] - np.array([[-0.0417488, 0.03564674, 0.39653497]])
 
     try:
         for rvec, tvec in zip(rvecs, tvecs):
