@@ -19,6 +19,9 @@ an integer that tells it what camera to use")
 cap = cv2.VideoCapture(dev)
 cv2.namedWindow('frame')
 
+#cap.set(cv.CV_CAP_PROP_FRAME_WIDTH, 800)
+#cap.set(cv.CV_CAP_PROP_FRAME_HEIGHT, 600)
+
 ######## Setup everything ahead of time for our calibration ########
 bsize = (6,9)
 objpsz = bsize[0]*bsize[1]
@@ -40,7 +43,9 @@ nextcap = time.time()
 while(True):
     # Capture frame-by-frame
     _, frame = cap.read()
-    blur = cv2.GaussianBlur(frame, (5,5), 0)
+    #blr = 3
+    #blur = cv2.GaussianBlur(frame, (blr,blr), 0)
+    blur = frame
     #gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
     gray = cv2.cvtColor(blur,cv2.COLOR_BGR2GRAY)
 
