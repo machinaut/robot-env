@@ -15,12 +15,20 @@ an integer that tells it what camera to use")
 cap = cv2.VideoCapture(dev)
 cv2.namedWindow('frame')
 
-arudict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
+#arudict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
+arudict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_250)
 
-distcoef = np.array([[0.06665446, -0.1910065, 0.00630647, 0.01302178, 0.15293528]])
-cammat = np.array([[1.65211157e+03, 0.00000000e+00, 1.02022795e+03],
-         [0.00000000e+00, 1.65353664e+03, 5.59629568e+02],
-          [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+#distcoef = np.array([[0.06665446, -0.1910065, 0.00630647, 0.01302178, 0.15293528]])
+#cammat = np.array([[1.65211157e+03, 0.00000000e+00, 1.02022795e+03],
+#         [0.00000000e+00, 1.65353664e+03, 5.59629568e+02],
+#          [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+
+distcoef = np.array([[3.82813496e-02, 5.55547260e-02, -1.20935805e-05,
+    8.35746924e-03, -1.39195375e-01]])
+    
+cammat = np.array([[ 582.46910086, 0.0, 349.94897196],\
+                  [  0.0, 585.82883534, 303.06227191],\
+                  [  0.0, 0.0, 1.0 ]])
 
 while(True):
     # Capture frame-by-frame
