@@ -8,7 +8,7 @@ from pygame.locals import *
 DBG = True
 
 #Dicts everywhere
-axis_data = {'base'     : {'upkey':K_q, 'zerokey':K_a, 'downkey':K_z, 'pos':90},
+axis_data = {'base'     : {'upkey':K_q, 'zerokey':K_a, 'downkey':K_z, 'pos':1000},
              'shoulder' : {'upkey':K_x, 'zerokey':K_s, 'downkey':K_w, 'pos':90},
              'elbow'    : {'upkey':K_e, 'zerokey':K_d, 'downkey':K_c, 'pos':90},
              'wrist'    : {'upkey':K_r, 'zerokey':K_f, 'downkey':K_v, 'pos':90},
@@ -17,7 +17,7 @@ axis_data = {'base'     : {'upkey':K_q, 'zerokey':K_a, 'downkey':K_z, 'pos':90},
 # [forward_key, zero_key, backwards_key]
 base_keys   = [K_q, K_a, K_z]
 shoulder_keys   = [K_w, K_s, K_x]
-elbow_keys  = [K_e, K_d, K_c] 
+elbow_keys  = [K_e, K_d, K_c]
 wrist_keys  = [K_r, K_f, K_v]
 grip_keys   = [K_t, K_g, K_b]
 
@@ -39,10 +39,10 @@ display = pygame.display.set_mode((100,100))
 #     bytesize = serial.EIGHTBITS)
 
 if not DBG:
-  ser = serial.Serial(sys.argv[1],115200) 
+  ser = serial.Serial(sys.argv[1],115200)
 
 b_pos = 90
-s_pos = 90 
+s_pos = 90
 e_pos = 90
 w_pos = 90
 g_pos = 90
@@ -64,19 +64,19 @@ def pos_normalize():
 
 while 1:
   pygame.event.pump()
-  
+
   # Make it quits
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       if not DBG:
         ser.close()
       pygame.quit(); sys.exit();
-  
+
   if not DBG:
     print ser.readline()
 
   keys = pygame.key.get_pressed()
-  
+
   for axis in axis_data.iteritems():
     axisname = axis[0]
     axis = axis[1]
@@ -86,7 +86,7 @@ while 1:
       axis['pos'] = servocenter
     if keys[axis['downkey']]:
       axis['pos'] -= servomv
-    #print axisname, axis 
+    #print axisname, axis
 
   if keys[base_keys[0]]:
     b_pos += servomv
@@ -94,7 +94,7 @@ while 1:
     b_pos = servocenter
   if keys[base_keys[2]]:
     b_pos -= servomv
-  
+
   if keys[shoulder_keys[0]]:
     s_pos -= servomv
   if keys[shoulder_keys[1]]:
@@ -124,13 +124,13 @@ while 1:
     g_pos -= servomv
 
   pygame.time.wait(steptime)
-  
+
   pos_normalize()
   dict_normalize()
-        
+
   cmd_str2 = ','.join([str(axis_data[ax]['pos']) for ax in ['base', 'shoulder', 'elbow', 'wrist', 'grip']])
   cmd_str2 = 'W' + cmd_str2 + '\n'
-  
+
   cmd_str = ','.join([str(b_pos), str(s_pos), str(e_pos), str(w_pos), str(g_pos)])
   cmd_str = 'W' + cmd_str + '\n'
   if DBG:
